@@ -1,0 +1,5 @@
+# Requirements that are needed for development only (testing tools, linters, etc.)
+
+-r ./base.in
+
+flake8

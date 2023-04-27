@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
-
+import os
 from pathlib import Path
 from environs import Env
 
@@ -26,7 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = env('SECRET_KEY', 'only for CI/CD')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', True)
 
 ALLOWED_HOSTS = ['*']
 
@@ -43,8 +43,9 @@ INSTALLED_APPS = [
 
     # PACKAGES
     'rest_framework',
-    # 'drf_yasg',
-    # 'django_celery_beat',
+    'drf_yasg',
+    'django_celery_beat',
+    'corsheaders',
 
     # APPS
     'apps.weather',
@@ -53,7 +54,9 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # for static
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  # for correct cors
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -91,7 +94,31 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+#
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': env("POSTGRES_DB", 'weather'),
+#         'USER': env("POSTGRES_USER", 'postgres'),
+#         'PASSWORD': env("POSTGRES_PASSWORD", 'PBOWiTanGCRdrajLGgEl'),
+#         'HOST': env("POSTGRES_HOST", 'postgres'),
+#         'PORT': env("POSTGRES_PORT", '5432'),
+#     }
+# }
 
+# corsheaders for correct works in frontend
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8000",
+    "http://127.0.0.1:80",
+
+]
+
+# base configuration for Celery
+CELERY_BROKER_URL = env("CELERY_BROKER_URL", 'redis://redis:6379')
+CELERY_RESULT_BACKEND = env("CELERY_BROKER_URL", 'redis://redis:6379')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
@@ -123,13 +150,19 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles/')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'mediafiles/')
+
+MEDIA_URL = 'api/media/'
+STATIC_URL = 'api/static/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# in apps.weather.task for configure days to pars
+DAYS_TO_PARSE = 5

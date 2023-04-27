@@ -1,0 +1,3 @@
+# Requirements that are needed only at production environment (wsgi server, for example)
+
+-r ./base.in
