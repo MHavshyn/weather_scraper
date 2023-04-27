@@ -9,17 +9,13 @@ services:
       - static_volume:/opt/staticfiles/
       - media_volume:/opt/mediafiles/
     ports:
-      - "81:81"
+      - "80:80"
     depends_on:
       - backend
 
   postgres:
     image: postgres:12
     restart: always
-#    environment:
-#      POSTGRES_DB: weather
-#      POSTGRES_USER: postgres
-#      POSTGRES_PASSWORD: postgres
     env_file:
       - .env
     ports:

@@ -8,4 +8,3 @@ urlpatterns = [
     path('<date>', WeatherChangeInfoView.as_view(), name='weather_change'),
 
 ]
-

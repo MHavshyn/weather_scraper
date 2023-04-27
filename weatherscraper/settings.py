@@ -88,23 +88,17 @@ WSGI_APPLICATION = 'weatherscraper.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env("POSTGRES_DB", 'weather'),
+        'USER': env("POSTGRES_USER", 'postgres'),
+        'PASSWORD': env("POSTGRES_PASSWORD", 'postgres'),
+        'HOST': env("POSTGRES_HOST", 'postgres'),
+        'PORT': env("POSTGRES_PORT", '5432'),
     }
 }
-#
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': env("POSTGRES_DB", 'weather'),
-#         'USER': env("POSTGRES_USER", 'postgres'),
-#         'PASSWORD': env("POSTGRES_PASSWORD", 'PBOWiTanGCRdrajLGgEl'),
-#         'HOST': env("POSTGRES_HOST", 'postgres'),
-#         'PORT': env("POSTGRES_PORT", '5432'),
-#     }
-# }
 
 # corsheaders for correct works in frontend
 CORS_ALLOWED_ORIGINS = [
@@ -114,8 +108,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 # base configuration for Celery
-CELERY_BROKER_URL = env("CELERY_BROKER_URL", 'redis://redis:6379')
-CELERY_RESULT_BACKEND = env("CELERY_BROKER_URL", 'redis://redis:6379')
+CELERY_BROKER_URL = env('CELERY_BROKER_URL', 'redis://redis:6379')
+CELERY_RESULT_BACKEND = env('CELERY_BROKER_URL', 'redis://redis:6379')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'

@@ -44,4 +44,3 @@ class StartWeatherScrapingView(APIView):
     def post(self, request):
         scrap_weather.delay()
         return Response(status=status.HTTP_200_OK)
-
