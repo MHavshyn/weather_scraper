@@ -16,8 +16,10 @@ services:
   postgres:
     image: postgres:12
     restart: always
-    env_file:
-      - .env
+    environment:
+      POSTGRES_DB: weather
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     ports:
       - '5435:5432'
     volumes:
